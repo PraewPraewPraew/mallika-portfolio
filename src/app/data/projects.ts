@@ -1,6 +1,5 @@
-import smartLivingHero from "figma:asset/e1906635db4210b11b5c64f679764c4f554832d9.png";
-
-export interface Project {
+export interface Project 
+{
   id: string;
   title: string;
   description: string;
@@ -16,7 +15,7 @@ export const projects: Project[] = [
     description: "Admin Portal for managing and monitoring Solar Roof devices with real-time status tracking and data visualisation.",
     category: "Web Application",
     tags: ["SaaS", "Dashboard", "Data Visual"],
-    image: smartLivingHero,
+    image: "/src/assets/smart-living-hero.png",
   },
   {
     id: "freshcart-ecommerce",
