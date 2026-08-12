@@ -11,7 +11,7 @@ const allProjects = [
     description: "Admin Portal for managing and monitoring Solar Roof devices with real-time status tracking and data visualization.",
     category: "Web",
     tags: ["SaaS", "Dashboard", "Data Visual"],
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "/src/assets/smart-living-hero.png"
   },
   {
     id: "freshcart-ecommerce",

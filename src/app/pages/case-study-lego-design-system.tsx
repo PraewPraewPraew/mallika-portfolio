@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { Button } from "../components/button";
 import { Tag } from "../components/tag";
 
-import legoHeroImg from "figma:asset/48c2289c44a22b2cf76cde355a04747fec647d76.png";
+import legoHeroImg from "figma:asset/lego-design-system-hero.png";
 
 /* ──────────────────────────── LEGO DESIGN SYSTEM CASE STUDY ──────────────────────────── */
 /* Restyled to match the Figma import design */
