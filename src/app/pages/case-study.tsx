@@ -11,6 +11,7 @@ import smartLivingImg1 from "figma:asset/smart-living-1.png";
 import smartLivingImg2 from "figma:asset/smart-living-2.png";
 import smartLivingImg3 from "figma:asset/smart-living-3.png";
 import smartLivingImg4 from "figma:asset/smart-living-4.png";
+import smartLivingCaseHero from "figma:asset/smart-living-case-hero.png";
 
 const caseStudies: Record<string, any> = {
   "smart-living": {
@@ -22,7 +23,7 @@ const caseStudies: Record<string, any> = {
     client: "Smart Living (SCG)",
     role: "UX/UI Designer",
     duration: "1 Year",
-    hero: smartLivingImg1,
+    hero: smartLivingCaseHero,
     screenshots: [
       { src: smartLivingImg1, caption: "Solar Roof device list with color-coded status indicators and mini dashboard for at-a-glance monitoring" },
       { src: smartLivingImg2, caption: "Daily performance monitoring with graphs, issue breakdowns, and full report generation" },
@@ -396,7 +397,7 @@ export function CaseStudy() {
           <ImageWithFallback
             src={study.hero}
             alt={study.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-top"
           />
           <div className="absolute inset-0 bg-foreground/60" />
         </div>

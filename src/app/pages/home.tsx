@@ -5,7 +5,7 @@ import { Button } from "../components/button";
 import { ProjectCard } from "../components/project-card";
 import { SectionHeader } from "../components/section-header";
 
-import smartLivingHero from "figma:asset/smart-living-1.png";
+import smartLivingHero from "figma:asset/smart-living-cover.png";
 
 const featuredProjects = [
   {
