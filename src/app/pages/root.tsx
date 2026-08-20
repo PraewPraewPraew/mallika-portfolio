@@ -1,4 +1,4 @@
-import { Outlet } from "react-router";
+import { Outlet, ScrollRestoration } from "react-router";
 import { Navigation } from "../components/navigation";
 import { Footer } from "../components/footer";
 import { ScrollToTop } from "../components/scroll-to-top";
@@ -12,6 +12,7 @@ export function Root() {
       </main>
       <Footer />
       <ScrollToTop />
+      <ScrollRestoration />
     </div>
   );
 }
