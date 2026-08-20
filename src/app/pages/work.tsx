@@ -4,6 +4,8 @@ import { ProjectCard } from "../components/project-card";
 import { SectionHeader } from "../components/section-header";
 import { cn } from "../../lib/utils";
 
+import smartLivingCover from "figma:asset/smart-living-cover.png";
+
 const allProjects = [
   {
     id: "smart-living",
@@ -11,7 +13,7 @@ const allProjects = [
     description: "Admin Portal for managing and monitoring Solar Roof devices with real-time status tracking and data visualization.",
     category: "Web",
     tags: ["SaaS", "Dashboard", "Data Visual"],
-    image: "/src/assets/smart-living-cover.png"
+    image: smartLivingCover
   },
   {
     id: "freshcart-ecommerce",
