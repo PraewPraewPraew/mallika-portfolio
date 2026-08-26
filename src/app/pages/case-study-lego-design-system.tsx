@@ -446,7 +446,7 @@ export function CaseStudyLegoDesignSystem() {
           <div className="grid md:grid-cols-2 gap-8">
             {/* Challenges */}
             <div className="space-y-8">
-              <div className="tracking-[1.5px] uppercase font-mono pb-4 border-b-2 border-[#d4183d] text-[#d4183d] text-[24px]">
+              <div className="tracking-[1.5px] uppercase font-mono pb-4 border-b-2 border-destructive text-destructive text-2xl">
                 Challenges
               </div>
 
@@ -525,7 +525,7 @@ export function CaseStudyLegoDesignSystem() {
 
             {/* Solutions */}
             <div className="space-y-8">
-              <div className="tracking-[1.5px] uppercase font-mono pb-4 border-b-2 border-foreground text-foreground text-[24px] text-[#6ab002]">Solutions</div>
+              <div className="tracking-[1.5px] uppercase font-mono pb-4 border-b-2 border-foreground text-foreground text-2xl">Solutions</div>
 
               <motion.div
                 className="pb-8 border-b border-border"
@@ -657,7 +657,7 @@ export function CaseStudyLegoDesignSystem() {
               transition={{ duration: 0.5 }}
             >
               <div
-                className="text-[48px] leading-none mb-2 tracking-tight"
+                className="text-5xl leading-none mb-2 tracking-tight"
                 style={{ fontFamily: "var(--font-serif)" }}
               >
                 CI
@@ -682,7 +682,7 @@ export function CaseStudyLegoDesignSystem() {
               transition={{ duration: 0.5, delay: 0.1 }}
             >
               <div
-                className="text-[48px] leading-none mb-2 tracking-tight"
+                className="text-5xl leading-none mb-2 tracking-tight"
                 style={{ fontFamily: "var(--font-serif)" }}
               >
                 &times;2
@@ -708,7 +708,7 @@ export function CaseStudyLegoDesignSystem() {
               transition={{ duration: 0.5, delay: 0.2 }}
             >
               <div
-                className="text-[48px] leading-none mb-2 tracking-tight"
+                className="text-5xl leading-none mb-2 tracking-tight"
                 style={{ fontFamily: "var(--font-serif)" }}
               >
                 ✦
