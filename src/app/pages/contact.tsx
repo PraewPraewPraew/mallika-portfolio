@@ -15,19 +15,34 @@ export function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate form submission
-    setTimeout(() => {
+
+    const form = e.currentTarget;
+    const payload = new FormData(form);
+    payload.append("access_key", "243c49c5-de0c-4b2b-b71b-61223e7774c1");
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: payload,
+      });
+      const result = await response.json();
+
+      if (result.success) {
+        setSubmitStatus("success");
+        setFormData({ name: "", email: "", subject: "", message: "" });
+      } else {
+        setSubmitStatus("error");
+      }
+    } catch {
+      setSubmitStatus("error");
+    } finally {
       setIsSubmitting(false);
-      setSubmitStatus("success");
-      setFormData({ name: "", email: "", subject: "", message: "" });
-      
       // Reset status after 3 seconds
       setTimeout(() => setSubmitStatus("idle"), 3000);
-    }, 1500);
+    }
   };
 
   const handleChange = (
@@ -84,7 +99,7 @@ export function Contact() {
                         Email
                       </p>
                       <a
-                        href="mailto:hello@alexrivers.design"
+                        href="mailto:preaw.akt@gmail.com"
                         className="text-sm md:text-base hover:text-muted transition-colors"
                       >
                         preaw.akt@gmail.com
@@ -153,6 +168,12 @@ export function Contact() {
               className="lg:col-span-2"
             >
               <form onSubmit={handleSubmit} className="space-y-6">
+                <input
+                  type="checkbox"
+                  name="botcheck"
+                  className="hidden"
+                  style={{ display: "none" }}
+                />
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label
