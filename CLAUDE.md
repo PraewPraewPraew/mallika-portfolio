@@ -31,3 +31,8 @@ There is no test suite, no lint script, and no tsconfig.json in this repo — ty
 - **`src/imports/`** contains the raw, unedited output from the original Figma Make export (large generated `.tsx`/`.ts` files). Nothing under `src/app` currently imports from this directory — treat it as reference/legacy only, not live code.
 - **Vite config note:** the React and Tailwind Vite plugins must both stay enabled even if a change appears not to use Tailwind directly — required by the Figma Make tooling. Do not add `.css`, `.tsx`, or `.ts` to `assetsInclude` in `vite.config.ts`.
 - **Never set `scroll-behavior: smooth` globally on `html`** (e.g. in `src/styles/index.css`). `root.tsx` renders React Router's `<ScrollRestoration />`, which resets/restores scroll via plain `window.scrollTo`; a global smooth-scroll rule makes the browser animate that call instead of jumping instantly, so navigating to a new route lands mid-scroll and back/forward restoration misses its target. If smooth scrolling is needed for a specific interaction, trigger it explicitly in JS (see `scroll-to-top.tsx`, which already passes `behavior: "smooth"` per-call) rather than applying it globally in CSS.
+
+## Conventions
+
+- Before recommending any third-party service, library, or tool (form backends, APIs, npm packages, etc.), verify current details from the official site/docs first — do not rely on memory. This applies especially to signup steps, free-tier limits, pricing, and current API syntax.
+- If the web can't be reached to verify, say so explicitly and tell the user the information may be outdated and should be double-checked before they act on it.
