@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { Github, Linkedin, Twitter, Mail } from "lucide-react";
+import { Linkedin, Mail } from "lucide-react";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -14,7 +14,7 @@ export function Footer() {
               className="text-xl md:text-2xl mb-4"
               style={{ fontFamily: "var(--font-serif)" }}
             >
-              Alex Rivers
+              Mallika
             </h3>
             <p className="text-sm md:text-base text-muted">
               UX/UI Designer crafting thoughtful digital experiences
@@ -62,16 +62,7 @@ export function Footer() {
             </h4>
             <div className="flex gap-4">
               <a
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted hover:text-foreground transition-colors"
-                aria-label="GitHub"
-              >
-                <Github size={20} />
-              </a>
-              <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/in/mallika-vaidyanuvatti-00a0bb144"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted hover:text-foreground transition-colors"
@@ -80,16 +71,7 @@ export function Footer() {
                 <Linkedin size={20} />
               </a>
               <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted hover:text-foreground transition-colors"
-                aria-label="Twitter"
-              >
-                <Twitter size={20} />
-              </a>
-              <a
-                href="mailto:hello@alexrivers.design"
+                href="mailto:preaw.akt@gmail.com"
                 className="text-muted hover:text-foreground transition-colors"
                 aria-label="Email"
               >
@@ -102,7 +84,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="mt-8 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs md:text-sm text-muted">
-            © {currentYear} Alex Rivers. All rights reserved.
+            © {currentYear} Mallika. All rights reserved.
           </p>
           <p className="text-xs md:text-sm text-muted">
             Designed & Built with ❤️

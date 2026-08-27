@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { Mail, MapPin, Send } from "lucide-react";
 import { Button } from "../components/button";
 import { SectionHeader } from "../components/section-header";
 
@@ -109,23 +109,6 @@ export function Contact() {
 
                   <div className="flex items-start gap-4">
                     <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-accent rounded-full flex items-center justify-center">
-                      <Phone size={20} className="text-foreground" />
-                    </div>
-                    <div>
-                      <p className="text-xs md:text-sm text-muted uppercase tracking-wider font-mono mb-1">
-                        Phone
-                      </p>
-                      <a
-                        href="tel:+1234567890"
-                        className="text-sm md:text-base hover:text-muted transition-colors"
-                      >
-                        +1 (234) 567-890
-                      </a>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-accent rounded-full flex items-center justify-center">
                       <MapPin size={20} className="text-foreground" />
                     </div>
                     <div>
@@ -133,7 +116,7 @@ export function Contact() {
                         Location
                       </p>
                       <p className="text-sm md:text-base">
-                        San Francisco, CA
+                        Bangkok, Thailand
                       </p>
                     </div>
                   </div>

@@ -108,4 +108,4 @@ See [DESIGN_SYSTEM.md](/DESIGN_SYSTEM.md) for complete design system documentati
 
 ## License
 
-© 2026 Alex Rivers. All rights reserved.
+© 2026 Mallika. All rights reserved.

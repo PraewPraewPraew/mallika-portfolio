@@ -202,7 +202,7 @@ export function About() {
               <div className="relative aspect-[3/4] rounded-lg overflow-hidden">
                 <ImageWithFallback
                   src="https://images.unsplash.com/photo-1771072428050-1492abb58f4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjB3b21hbiUyMGRlc2lnbmVyJTIwcG9ydHJhaXR8ZW58MXx8fHwxNzcyMDkyNTA3fDA&ixlib=rb-4.1.0&q=80&w=1080"
-                  alt="Alex Rivers"
+                  alt="Mallika"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/20 to-transparent" />
@@ -222,7 +222,7 @@ export function About() {
               />
               <div className="space-y-4 text-base md:text-lg text-muted">
                 <p>
-                  Hi, I'm Alex Rivers — a Senior UX/UI Designer with 8+ years of
+                  Hi, I'm Mallika — a Senior UX/UI Designer with 8+ years of
                   experience crafting digital products that users love and
                   businesses rely on.
                 </p>
