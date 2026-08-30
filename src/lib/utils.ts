@@ -26,3 +26,27 @@ export function resolveSections<T extends { data: unknown }>(
       number: String(index + 1).padStart(2, "0"),
     }));
 }
+
+/**
+ * Walks a "next project" chain one hop at a time via `getNext(id)`, skipping
+ * any id that isn't published, and returns the first published id found.
+ * Guards against loops (including looping back to `startId`) by tracking
+ * visited ids. Returns null if no published project is reachable — callers
+ * should hide their "Next Project" UI in that case rather than show a
+ * broken or self-referential link.
+ */
+export function findPublishedNext(
+  startId: string,
+  getNext: (id: string) => string | undefined,
+  isPublished: (id: string) => boolean
+): string | null {
+  const visited = new Set([startId]);
+  let candidate = getNext(startId);
+
+  while (candidate && !visited.has(candidate)) {
+    if (isPublished(candidate)) return candidate;
+    visited.add(candidate);
+    candidate = getNext(candidate);
+  }
+  return null;
+}

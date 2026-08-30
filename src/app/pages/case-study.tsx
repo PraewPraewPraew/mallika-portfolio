@@ -17,8 +17,12 @@ import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Button } from "../components/button";
 import { Tag } from "../components/tag";
 import { SectionHeader } from "../components/section-header";
-import { resolveSections } from "../../lib/utils";
+import { resolveSections, findPublishedNext } from "../../lib/utils";
 import { caseStudies } from "../data/case-studies";
+import { projects } from "../data/projects";
+
+const isProjectPublished = (id: string) =>
+  projects.find((p) => p.id === id)?.published === true;
 
 export function CaseStudy() {
   const { id } = useParams();
@@ -95,6 +99,18 @@ export function CaseStudy() {
     { key: "impact", data: study.impact },
   ]);
   const visible = Object.fromEntries(sections.map((s) => [s.key, true]));
+
+  // Skip unpublished projects when picking what "Next Project" points to —
+  // published: false projects still exist in caseStudies (so their own
+  // page works via direct URL) but should never be surfaced as a next-up
+  // recommendation. nextId is null if no published project is reachable.
+  const nextId = id
+    ? findPublishedNext(
+        id,
+        (pid) => caseStudies[pid]?.nextProject,
+        isProjectPublished
+      )
+    : null;
 
   return (
     <div>
@@ -456,35 +472,37 @@ export function CaseStudy() {
         </section>
       )}
 
-      {/* Next Project */}
-      <section className="py-12 md:py-20 bg-foreground text-background">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div>
-              <p className="text-xs md:text-sm uppercase tracking-widest font-mono mb-2 opacity-80">
-                Next Project
-              </p>
-              <h3
-                className="text-2xl md:text-3xl lg:text-4xl"
-                style={{ fontFamily: "var(--font-serif)" }}
+      {/* Next Project — hidden entirely if no published project is reachable */}
+      {nextId && (
+        <section className="py-12 md:py-20 bg-foreground text-background">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              <div>
+                <p className="text-xs md:text-sm uppercase tracking-widest font-mono mb-2 opacity-80">
+                  Next Project
+                </p>
+                <h3
+                  className="text-2xl md:text-3xl lg:text-4xl"
+                  style={{ fontFamily: "var(--font-serif)" }}
+                >
+                  {caseStudies[nextId]?.title}
+                </h3>
+              </div>
+              <Button
+                variant="primary"
+                size="lg"
+                asChild
+                className="bg-accent text-foreground hover:bg-accent/90"
               >
-                {caseStudies[study.nextProject]?.title}
-              </h3>
+                <Link to={`/case-study/${nextId}`}>
+                  View Project
+                  <ArrowRight size={20} />
+                </Link>
+              </Button>
             </div>
-            <Button
-              variant="primary"
-              size="lg"
-              asChild
-              className="bg-accent text-foreground hover:bg-accent/90"
-            >
-              <Link to={`/case-study/${study.nextProject}`}>
-                View Project
-                <ArrowRight size={20} />
-              </Link>
-            </Button>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }

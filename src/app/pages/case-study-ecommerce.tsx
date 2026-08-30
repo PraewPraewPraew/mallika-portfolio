@@ -23,8 +23,12 @@ import { Button } from "../components/button";
 import { Tag } from "../components/tag";
 import { SectionHeader } from "../components/section-header";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-import { resolveSections } from "../../lib/utils";
+import { resolveSections, findPublishedNext } from "../../lib/utils";
 import { ecommerceCaseStudies } from "../data/case-studies-ecommerce";
+import { projects } from "../data/projects";
+
+const isProjectPublished = (pid: string) =>
+  projects.find((p) => p.id === pid)?.published === true;
 
 export function CaseStudyEcommerce() {
   // routes.tsx registers one exact literal path per "ecommerce"-layout
@@ -72,6 +76,14 @@ export function CaseStudyEcommerce() {
   const sectionByKey = Object.fromEntries(sections.map((s) => [s.key, s]));
   const altBg = (key: string) =>
     sectionByKey[key] && sectionByKey[key].index % 2 === 0 ? "bg-card" : "";
+
+  // Same published-skip rule as case-study.tsx — never link "Next Project"
+  // to something unpublished. nextId is null if none is reachable.
+  const nextId = findPublishedNext(
+    id,
+    (pid) => ecommerceCaseStudies[pid]?.nextProjectId,
+    isProjectPublished
+  );
 
   return (
     <div>
@@ -474,12 +486,14 @@ export function CaseStudyEcommerce() {
               Back to All Work
             </Link>
           </Button>
-          <Button variant="ghost" asChild>
-            <Link to={`/case-study/${study.nextProjectId}`}>
-              Next Project
-              <ArrowRight size={20} />
-            </Link>
-          </Button>
+          {nextId && (
+            <Button variant="ghost" asChild>
+              <Link to={`/case-study/${nextId}`}>
+                Next Project
+                <ArrowRight size={20} />
+              </Link>
+            </Button>
+          )}
         </div>
       </section>
     </div>
