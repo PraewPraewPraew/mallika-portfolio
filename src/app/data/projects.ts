@@ -82,4 +82,18 @@ export const projects: Project[] = [
     featured: false,
     layoutType: "data-driven",
   },
+  {
+    // 🆕 โครงเปล่า — โปรเจกต์จริงยังไม่มา แก้ id นี้เป็นชื่อจริงตอนพร้อมเผยแพร่
+    // (ถ้าจะเปลี่ยน id ต้องให้ Claude Code ช่วย เพราะต้องแก้ key ให้ตรงกันใน
+    // src/app/data/case-studies.ts ด้วย ไม่งั้นหน้าเว็บจะหาไม่เจอ)
+    id: "new-project-1",
+    title: "", // ชื่อโปรเจกต์ที่โชว์บนการ์ด (หน้า Work/Home) และหัวข้อในหน้า case study
+    description: "", // คำโปรยสั้นๆ ใต้ชื่อบนการ์ด (1-2 ประโยค)
+    category: "", // ต้องเป็นหนึ่งใน: "App", "Web", "Design System" (ต้องตรงกับปุ่ม filter ในหน้า Work เป๊ะ ตัวพิมพ์เล็ก-ใหญ่ต้องตรง)
+    tags: [], // คำสั้นๆ ใต้ชื่อโปรเจกต์บนการ์ด เช่น ["Mobile", "Fintech"] ใส่กี่คำก็ได้
+    image: "", // รูปปกการ์ด (หน้า Work/Home) — วาง URL รูปตรงๆ ได้เลย (เช่นจาก unsplash.com) ถ้าจะใช้รูปที่อัปโหลดเองต้องให้ Claude Code ช่วย import
+    published: false, // เปลี่ยนเป็น true เมื่อพร้อมให้คนอื่นเห็นในหน้า Work/Home
+    featured: false, // เปลี่ยนเป็น true ถ้าอยากให้ขึ้นหน้าแรกด้วย (มีผลก็ต่อเมื่อ published เป็น true แล้ว)
+    layoutType: "data-driven", // ห้ามแก้ค่านี้ — ผูกกับว่าเนื้อหาอยู่ในไฟล์ case-studies.ts (ไม่ใช่ case-studies-ecommerce.ts)
+  },
 ];
