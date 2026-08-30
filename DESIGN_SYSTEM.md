@@ -15,12 +15,14 @@ This portfolio website features a custom design system inspired by premium desig
 - **Foreground:** `#0A0A0A` - Near black for optimal readability
 - **Accent:** `#C8FF00` - Electric lime for energy and modern feel
 - **Muted:** `#7A7570` - Warm gray for secondary text
+- **Surface Subtle:** `#EDEAE6` - Slightly darker-than-background neutral, for placeholder boxes and subtle surfaces that need to read as a step down from `background` without going as dark as `muted`
 
 ### Usage Guidelines
 - Use `background` for main page backgrounds
 - Use `foreground` for primary text and dark elements
 - Use `accent` sparingly for CTAs, highlights, and interactive elements
 - Use `muted` for secondary text and labels
+- Use `surface-subtle` (`bg-surface-subtle`) for placeholder/empty-state boxes and subtle background fills — not for text
 
 ## Typography
 

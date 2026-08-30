@@ -6,6 +6,7 @@
   --foreground: #0A0A0A;
   --accent: #C8FF00;
   --muted: #7A7570;
+  --surface-subtle: #EDEAE6;
   
   /* Font families */
   --font-serif: 'Playfair Display', serif;
@@ -68,6 +69,7 @@
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
   --color-muted: var(--muted);
+  --color-surface-subtle: var(--surface-subtle);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
