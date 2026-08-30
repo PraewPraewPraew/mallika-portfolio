@@ -4,37 +4,13 @@ import { motion } from "motion/react";
 import { Button } from "../components/button";
 import { ProjectCard } from "../components/project-card";
 import { SectionHeader } from "../components/section-header";
-
-import smartLivingHero from "figma:asset/smart-living-cover.png";
-
-const featuredProjects = [
-  {
-    id: "smart-living",
-    title: "Smart Living - Admin Portal",
-    description: "Admin Portal for managing and monitoring Solar Roof devices with real-time status tracking and data visualization.",
-    category: "Web",
-    tags: ["SaaS", "Dashboard", "Data Visual"],
-    image: smartLivingHero,
-  },
-  {
-    id: "freshcart-ecommerce",
-    title: "FreshCart E-Commerce",
-    description: "Rethinking the online grocery experience with streamlined checkout, smart search, and data-driven design decisions.",
-    category: "Web",
-    tags: ["E-Commerce", "Web", "UX Strategy"],
-    image: "https://images.unsplash.com/photo-1764194790147-8a1e47a91a3f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlY29tbWVyY2UlMjBzaG9wcGluZyUyMGludGVyZmFjZSUyMGNsZWFufGVufDF8fHx8MTc3MzA0NjgxM3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-  },
-  {
-    id: "lego-design-system",
-    title: "Building Blocks Design System",
-    description: "Building a token-first design system from scratch where brand identity was evolving and deadlines weren't waiting.",
-    category: "Design System",
-    tags: ["Tokens", "Components", "Documentation"],
-    image: "https://images.unsplash.com/photo-1724745523036-bfceadebcd50?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsZWdvJTIwYmxvY2tzJTIwY29sb3JmdWwlMjBkZXNpZ24lMjBzeXN0ZW18ZW58MXx8fHwxNzczMjIzMjc4fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-  },
-];
+import { projects } from "../data/projects";
 
 export function Home() {
+  const featuredProjects = projects.filter(
+    (project) => project.published && project.featured
+  );
+
   return (
     <div>
       {/* Hero Section */}

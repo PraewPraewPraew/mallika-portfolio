@@ -8,6 +8,23 @@ import { CaseStudyLegoDesignSystem } from "./pages/case-study-lego-design-system
 import { About } from "./pages/about";
 import { Contact } from "./pages/contact";
 import { NotFound } from "./pages/not-found";
+import { projects } from "./data/projects";
+
+// Maps a project's layoutType to its dedicated case study component.
+// "data-driven" projects need no entry here — they're all handled by
+// the generic case-study/:id route below, reading from caseStudies in
+// case-study.tsx.
+const layoutComponents = {
+  ecommerce: CaseStudyEcommerce,
+  lego: CaseStudyLegoDesignSystem,
+};
+
+const customLayoutRoutes = projects
+  .filter((project) => project.layoutType !== "data-driven")
+  .map((project) => ({
+    path: `case-study/${project.id}`,
+    Component: layoutComponents[project.layoutType],
+  }));
 
 export const router = createBrowserRouter([
   {
@@ -16,8 +33,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, Component: Home },
       { path: "work", Component: Work },
-      { path: "case-study/freshcart-ecommerce", Component: CaseStudyEcommerce },
-      { path: "case-study/lego-design-system", Component: CaseStudyLegoDesignSystem },
+      ...customLayoutRoutes,
       { path: "case-study/:id", Component: CaseStudy },
       { path: "about", Component: About },
       { path: "contact", Component: Contact },

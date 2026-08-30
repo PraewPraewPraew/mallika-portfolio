@@ -19,8 +19,8 @@ There is no test suite, no lint script, and no tsconfig.json in this repo — ty
 ## Architecture
 
 - **Entry:** `src/main.tsx` mounts `src/app/App.tsx`, which renders `RouterProvider` from `src/app/routes.tsx`.
-- **Routing:** all routes are declared in `src/app/routes.tsx` and nest under `Root` (`src/app/pages/root.tsx`), which wraps every page with `Navigation`, `Footer`, and `ScrollToTop`. Case studies for two projects (`freshcart-ecommerce`, `lego-design-system`) have dedicated page components with hardcoded routes that are matched *before* the generic `case-study/:id` route — new case studies should follow this same pattern (either add a dedicated route above the `:id` catch-all, or extend the data-driven `case-study.tsx`).
-- **Data:** `src/app/data/projects.ts` is the single source of truth for the project list (id, title, category, tags, image) rendered on the Work page and used to resolve `case-study/:id`.
+- **Routing:** all routes are declared in `src/app/routes.tsx` and nest under `Root` (`src/app/pages/root.tsx`), which wraps every page with `Navigation`, `Footer`, and `ScrollToTop`. Case study routes are generated from `data/projects.ts`: projects with a non-`"data-driven"` `layoutType` (currently `"ecommerce"` → `case-study-ecommerce.tsx`, `"lego"` → `case-study-lego-design-system.tsx`) get a dedicated route built from `layoutComponents[project.layoutType]`, registered *before* the generic `case-study/:id` catch-all that handles every `"data-driven"` project via `case-study.tsx`. See "Adding a new case study" below for the full walkthrough.
+- **Data:** `src/app/data/projects.ts` is the single source of truth for the project list — `work.tsx` and `home.tsx` both import and filter it (`published`, and `featured` for Home) rather than keeping their own copies. Each entry also carries `layoutType`, which drives routing (see above). This file only holds card-level data (id, title, description, category, tags, image, published, featured, layoutType); the actual case study *content* for `"data-driven"` projects lives separately in `case-study.tsx`'s `caseStudies` object, keyed by the same `id`.
 - **Components:**
   - `src/app/components/*.tsx` — hand-built portfolio-specific components (Button, Navigation, Footer, ProjectCard, SectionHeader, Tag, background-patterns, loading-spinner, scroll-to-top). Re-exported via `src/app/components/index.ts`.
   - `src/app/components/ui/*.tsx` — shadcn/ui primitives (Radix-based). Treat these as vendored library code; prefer composing them rather than rewriting.
@@ -36,6 +36,35 @@ There is no test suite, no lint script, and no tsconfig.json in this repo — ty
 
 - Before recommending any third-party service, library, or tool (form backends, APIs, npm packages, etc.), verify current details from the official site/docs first — do not rely on memory. This applies especially to signup steps, free-tier limits, pricing, and current API syntax.
 - If the web can't be reached to verify, say so explicitly and tell the user the information may be outdated and should be double-checked before they act on it.
+
+## Adding a new case study
+
+Every project card (Work grid, Home featured section) and its case study page are driven by one entry in `src/app/data/projects.ts`. What else you need to touch depends on that entry's `layoutType`.
+
+### Showing/hiding or re-featuring an existing project
+
+**You can do this yourself in `projects.ts`, no code changes needed:**
+- `published: false` → hides the project from Work and Home. The case study page still exists and is reachable if someone has the direct URL — nothing 404s, it's just unlisted.
+- `featured: true/false` → controls whether it shows in Home's Featured Projects section (only takes effect if `published` is also `true`).
+- Editing `title`, `description`, `category`, `tags`, or `image` (as a URL string) on an existing entry is also safe to hand-edit. Just keep the JSON-like structure intact — matching commas, quotes, and brackets — since a typo here breaks the whole site's build silently until someone notices.
+
+### Adding a new project with layoutType: "data-driven"
+
+This is the easy, reusable path — use it unless the project truly needs a one-of-a-kind layout.
+
+1. **(You can do this yourself)** Add a new entry to the `projects` array in `projects.ts`: `id` (must be a unique URL-safe slug — this becomes `/case-study/<id>`), `title`, `description`, `category` (must match one of the `filters` in `work.tsx`: `App`, `Web`, or `Design System`, or `All`), `tags`, `image`, `published: true`, `featured: true/false`, `layoutType: "data-driven"`.
+2. **(Ask Claude Code, or hand-edit carefully)** Add a matching object to the `caseStudies` record in `case-study.tsx`, keyed by the *same* `id` you used in step 1. It needs: `title`, `subtitle`, `category`, `tags`, `year`, `client`, `role`, `duration`, `hero`, `screenshots` (optional — array of image URLs or `{src, caption}` objects), `overview`, `problem: {title, description, challenges[]}`, `research: {title, description, insights[]}`, `solution: {title, description, features: [{title, description}]}`, `impact: {title, metrics: [{value, label}]}`, and `nextProject` (the `id` of another entry — powers the "Next Project" link at the bottom of the page).
+3. **(Ask Claude Code)** If any images are local uploads rather than external URLs: add the files to `src/assets/`, then `import` them at the top of `case-study.tsx` using the `figma:asset/<filename>` scheme and reference the imported variable instead of a raw string.
+4. No `routes.tsx` change needed — `case-study/:id` picks up any `"data-driven"` project automatically.
+5. Optional: update the `nextProject` chain so the new project is included in the rotation (point an existing entry's `nextProject` at the new `id`, and set the new entry's `nextProject` to continue the chain).
+
+### Adding a new project with a bespoke layout (like "ecommerce" or "lego")
+
+`layoutType: "ecommerce"` and `layoutType: "lego"` each map to one specific existing file (`case-study-ecommerce.tsx`, `case-study-lego-design-system.tsx`) that is hardcoded for that one project's content — they are not reusable templates. A genuinely new bespoke layout always needs code work; there's no projects.ts-only path for this.
+
+1. **(Ask Claude Code)** Duplicate the closest existing custom case study file as a starting point, rename the component and file, and rewrite its content for the new project.
+2. **(Ask Claude Code)** Register the new component in `layoutComponents` in `routes.tsx` under a new key (e.g. `"newproject"`).
+3. **(You can do this yourself once the above exists)** Add the project's entry to `projects.ts` with `layoutType` set to that new key.
 
 ## Known improvements
 
