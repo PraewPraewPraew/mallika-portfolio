@@ -84,8 +84,9 @@ export const projects: Project[] = [
   },
   {
     // 🆕 โครงเปล่า — โปรเจกต์จริงยังไม่มา แก้ id นี้เป็นชื่อจริงตอนพร้อมเผยแพร่
-    // (ถ้าจะเปลี่ยน id ต้องให้ Claude Code ช่วย เพราะต้องแก้ key ให้ตรงกันใน
-    // src/app/data/case-studies.ts ด้วย ไม่งั้นหน้าเว็บจะหาไม่เจอ)
+    // (ถ้าจะเปลี่ยน id ต้องให้ Claude Code ช่วย เพราะต้องแก้ทั้ง key ใน
+    // src/app/data/case-studies/index.ts และชื่อไฟล์ new-project-1.ts ให้ตรงกัน
+    // ไม่งั้นหน้าเว็บจะหาไม่เจอ)
     id: "new-project-1",
     title: "", // ชื่อโปรเจกต์ที่โชว์บนการ์ด (หน้า Work/Home) และหัวข้อในหน้า case study
     description: "", // คำโปรยสั้นๆ ใต้ชื่อบนการ์ด (1-2 ประโยค)
@@ -94,12 +95,13 @@ export const projects: Project[] = [
     image: "", // รูปปกการ์ด (หน้า Work/Home) — วาง URL รูปตรงๆ ได้เลย (เช่นจาก unsplash.com) ถ้าจะใช้รูปที่อัปโหลดเองต้องให้ Claude Code ช่วย import
     published: false, // เปลี่ยนเป็น true เมื่อพร้อมให้คนอื่นเห็นในหน้า Work/Home
     featured: false, // เปลี่ยนเป็น true ถ้าอยากให้ขึ้นหน้าแรกด้วย (มีผลก็ต่อเมื่อ published เป็น true แล้ว)
-    layoutType: "data-driven", // ห้ามแก้ค่านี้ — ผูกกับว่าเนื้อหาอยู่ในไฟล์ case-studies.ts (ไม่ใช่ case-studies-ecommerce.ts)
+    layoutType: "data-driven", // ห้ามแก้ค่านี้ — ผูกกับว่าเนื้อหาอยู่ในโฟลเดอร์ src/app/data/case-studies/ (ไม่ใช่ case-studies-ecommerce/)
   },
   {
     // 🆕 โครงเปล่า — โปรเจกต์จริงยังไม่มา แก้ id นี้เป็นชื่อจริงตอนพร้อมเผยแพร่
-    // (ถ้าจะเปลี่ยน id ต้องให้ Claude Code ช่วย เพราะต้องแก้ key ให้ตรงกันใน
-    // src/app/data/case-studies-ecommerce.ts ด้วย ไม่งั้นหน้าเว็บจะหาไม่เจอ)
+    // (ถ้าจะเปลี่ยน id ต้องให้ Claude Code ช่วย เพราะต้องแก้ทั้ง key ใน
+    // src/app/data/case-studies-ecommerce/index.ts และชื่อไฟล์ new-project-2.ts
+    // ให้ตรงกัน ไม่งั้นหน้าเว็บจะหาไม่เจอ)
     id: "new-project-2",
     title: "", // ชื่อโปรเจกต์ที่โชว์บนการ์ด (หน้า Work/Home) และหัวข้อในหน้า case study
     description: "", // คำโปรยสั้นๆ ใต้ชื่อบนการ์ด (1-2 ประโยค)
@@ -108,6 +110,6 @@ export const projects: Project[] = [
     image: "", // รูปปกการ์ด (หน้า Work/Home) — วาง URL รูปตรงๆ ได้เลย (เช่นจาก unsplash.com) ถ้าจะใช้รูปที่อัปโหลดเองต้องให้ Claude Code ช่วย import
     published: false, // เปลี่ยนเป็น true เมื่อพร้อมให้คนอื่นเห็นในหน้า Work/Home
     featured: false, // เปลี่ยนเป็น true ถ้าอยากให้ขึ้นหน้าแรกด้วย (มีผลก็ต่อเมื่อ published เป็น true แล้ว)
-    layoutType: "ecommerce", // ห้ามแก้ค่านี้ — ผูกกับว่าเนื้อหาอยู่ในไฟล์ case-studies-ecommerce.ts (ไม่ใช่ case-studies.ts)
+    layoutType: "ecommerce", // ห้ามแก้ค่านี้ — ผูกกับว่าเนื้อหาอยู่ในโฟลเดอร์ src/app/data/case-studies-ecommerce/ (ไม่ใช่ case-studies/)
   },
 ];

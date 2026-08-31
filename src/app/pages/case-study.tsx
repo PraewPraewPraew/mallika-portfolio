@@ -1,7 +1,8 @@
 // ============================================================================
 // Template สำหรับ case study แบบ "data-driven" (layoutType: "data-driven")
-// เนื้อหาของแต่ละโปรเจกต์อยู่ใน src/app/data/case-studies.ts ไฟล์นั้นแก้เองได้
-// ไฟล์นี้มีแต่โครงสร้าง/logic การแสดงผล ไม่ควรแก้เว้นแต่จะเปลี่ยนหน้าตา/ลำดับ section
+// เนื้อหาของแต่ละโปรเจกต์อยู่ใน src/app/data/case-studies/ (1 ไฟล์ต่อโปรเจกต์
+// รวมร่างผ่าน index.ts ในโฟลเดอร์นั้น) ไฟล์พวกนั้นแก้เองได้ ไฟล์นี้มีแต่
+// โครงสร้าง/logic การแสดงผล ไม่ควรแก้เว้นแต่จะเปลี่ยนหน้าตา/ลำดับ section
 //
 // Optional Sections pattern: problem/research/solution/screenshots/impact
 // เป็น section ที่ "ไม่มีข้อมูล = ไม่แสดง" อัตโนมัติ ผ่าน resolveSections()

@@ -1,7 +1,8 @@
 // ============================================================================
 // Template สำหรับ case study แบบ "ecommerce" (layoutType: "ecommerce")
-// เนื้อหาของแต่ละโปรเจกต์อยู่ใน src/app/data/case-studies-ecommerce.ts
-// ไฟล์นั้นแก้เองได้ ไฟล์นี้มีแต่โครงสร้าง/logic การแสดงผล
+// เนื้อหาของแต่ละโปรเจกต์อยู่ใน src/app/data/case-studies-ecommerce/ (1 ไฟล์
+// ต่อโปรเจกต์ รวมร่างผ่าน index.ts ในโฟลเดอร์นั้น) ไฟล์พวกนั้นแก้เองได้ ไฟล์นี้
+// มีแต่โครงสร้าง/logic การแสดงผล
 //
 // Optional Sections pattern: challenge/approach/solution/collaboration/
 // reflection เป็น section ที่ "ไม่มีข้อมูล = ไม่แสดง" อัตโนมัติ ผ่าน

@@ -14,13 +14,17 @@ npm run dev     # start Vite dev server
 npm run build   # production build (vite build)
 ```
 
-There is no test suite, no lint script, and no tsconfig.json in this repo — type checking happens implicitly through the Vite/esbuild transform, not via `tsc`.
+There is no test suite, no lint script, and no tsconfig.json in this repo — the build's type checking happens implicitly through the Vite/esbuild transform, not via `tsc` (esbuild strips types without checking them, so a type error will never fail `npm run build`). Editor-level type checking (VS Code's red squiggles) still works reasonably well without a tsconfig via VS Code's inferred-project mode — this is what the interfaces in `data/case-studies/types.ts` and `data/case-studies-ecommerce/types.ts` rely on to catch typo'd/missing fields as you type. `src/vite-env.d.ts` declares the `figma:asset/*` module scheme so those image imports don't show as false "Cannot find module" errors in the editor.
 
 ## Architecture
 
 - **Entry:** `src/main.tsx` mounts `src/app/App.tsx`, which renders `RouterProvider` from `src/app/routes.tsx`.
 - **Routing:** all routes are declared in `src/app/routes.tsx` and nest under `Root` (`src/app/pages/root.tsx`), which wraps every page with `Navigation`, `Footer`, and `ScrollToTop`. Case study routes are generated from `data/projects.ts`: projects with a non-`"data-driven"` `layoutType` (currently `"ecommerce"` → `case-study-ecommerce.tsx`, `"lego"` → `case-study-lego-design-system.tsx`) get a dedicated route built from `layoutComponents[project.layoutType]`, registered *before* the generic `case-study/:id` catch-all that handles every `"data-driven"` project via `case-study.tsx`. See "Adding a new case study" below for the full walkthrough.
-- **Data:** `src/app/data/projects.ts` is the single source of truth for the project list — `work.tsx` and `home.tsx` both import and filter it (`published`, and `featured` for Home) rather than keeping their own copies. Each entry also carries `layoutType`, which drives routing (see above). This file only holds card-level data (id, title, description, category, tags, image, published, featured, layoutType); the actual case study *content* lives in per-layout data files that the template components import: `data/case-studies.ts` (`"data-driven"` projects, consumed by `case-study.tsx`) and `data/case-studies-ecommerce.ts` (`"ecommerce"` projects, consumed by `case-study-ecommerce.tsx`). All three data files are plain data with Thai comments explaining where each field renders — see "Adding a new case study" below.
+- **Data:** `src/app/data/projects.ts` is the single source of truth for the project list — `work.tsx` and `home.tsx` both import and filter it (`published`, and `featured` for Home) rather than keeping their own copies. Each entry also carries `layoutType`, which drives routing (see above). This file only holds card-level data (id, title, description, category, tags, image, published, featured, layoutType); the actual case study *content* lives one folder per layout, one file per project inside it:
+  - `data/case-studies/` — `"data-driven"` projects, consumed by `case-study.tsx`. `types.ts` defines `DataDrivenCaseStudy` (and its nested section types); `_template.ts` is a fully-typed, empty starting point to copy for a new project (never imported by `index.ts` — it is not a real project); each other file (`smart-living.ts`, `nova-banking.ts`, ...) exports one typed project object; `index.ts` imports all of them into the `caseStudies: Record<string, DataDrivenCaseStudy>` map that `case-study.tsx` actually reads, and documents in a header comment how to register a new one.
+  - `data/case-studies-ecommerce/` — same shape, for `"ecommerce"` projects: `types.ts` (`EcommerceCaseStudy`), `_template.ts`, one file per project, `index.ts` exporting `ecommerceCaseStudies`.
+  - Every field in every project file has a Thai comment explaining where it renders and whether it's required. Required fields have no `?` in the type; optional ones (mostly whole sections) do — deleting an optional field from a project file hides that section automatically (see the Optional Sections note below). Because each project object is typed (`: DataDrivenCaseStudy` / `: EcommerceCaseStudy`), a typo'd field name or a missing required field shows as a red squiggle in the editor immediately, without needing to run the build.
+  - `case-study.tsx` and `case-study-ecommerce.tsx` still just `import { caseStudies } from "../data/case-studies"` / `import { ecommerceCaseStudies } from "../data/case-studies-ecommerce"` — a folder with an `index.ts` resolves the same way a single file did, so converting the flat files into folders required no template changes.
 - **Optional Sections pattern:** `case-study.tsx` and `case-study-ecommerce.tsx` both build their section list through `resolveSections()` (`src/lib/utils.ts`): pass an ordered array of `{key, data}` (plus whatever else a section needs), and it drops any entry whose `data` is falsy, then returns the rest with an `index`/`number` computed from their position in the *filtered* list. This is what makes a section "disappear automatically when its data is missing" and what makes `case-study-ecommerce.tsx`'s "01–05" labels, per-section animation delay, and alternating background renumber themselves correctly when a section is hidden — none of that is hardcoded to a fixed slot. Both templates call the same helper on purpose, so a future move to a full Section Registry (block-based, data-declared order — see "Known improvements") only has to happen once instead of being reinvented per template. Important: this only makes sections *optional*, not *reorderable* — the order sections can appear in is still whatever order they're listed in each template's `resolveSections([...])` call; data can hide a section, not move it.
 - **Components:**
   - `src/app/components/*.tsx` — hand-built portfolio-specific components (Button, Navigation, Footer, ProjectCard, SectionHeader, Tag, background-patterns, loading-spinner, scroll-to-top). Re-exported via `src/app/components/index.ts`.
@@ -47,12 +51,13 @@ Every project card (Work grid, Home featured section) and its case study page ar
 | File | Type | Who edits it |
 |---|---|---|
 | `data/projects.ts` | data | You — see caveats below |
-| `data/case-studies.ts` | data | You — see caveats below |
-| `data/case-studies-ecommerce.ts` | data | You — see caveats below |
+| `data/case-studies/*.ts` (except `types.ts`) | data | You — see caveats below |
+| `data/case-studies-ecommerce/*.ts` (except `types.ts`) | data | You — see caveats below |
+| `data/case-studies/types.ts`, `data/case-studies-ecommerce/types.ts` | code | Claude Code (changes what every project file is allowed to contain) |
 | `case-study.tsx`, `case-study-ecommerce.tsx`, `case-study-lego-design-system.tsx` | template code | Claude Code |
-| `routes.tsx`, `lib/utils.ts` | code | Claude Code |
+| `routes.tsx`, `lib/utils.ts`, `vite-env.d.ts` | code | Claude Code |
 
-Caveat on the data files: plain text/field edits (strings, numbers, array items) are safe to hand-edit — keep commas/quotes/brackets matching or the build breaks silently. The `import ... from "figma:asset/..."` lines at the top of `case-studies.ts` and `case-studies-ecommerce.ts` are marked with a ⚠️ comment and always need Claude Code, since adding a local image means placing the file in `src/assets/` and getting the resolver-scheme import right.
+Caveat on the data files: plain text/field edits (strings, numbers, array items) are safe to hand-edit — keep commas/quotes/brackets matching or the build breaks silently (typos in structure won't be caught by the type system the way a wrong field *name* is — see the note above). The `import ... from "figma:asset/..."` lines in `case-studies/smart-living.ts` always need Claude Code, since adding a local image means placing the file in `src/assets/` and getting the resolver-scheme import right.
 
 ### Showing/hiding or re-featuring an existing project
 
@@ -63,9 +68,9 @@ Caveat on the data files: plain text/field edits (strings, numbers, array items)
 
 ### Hiding/showing a section within an existing case study
 
-Both `"data-driven"` and `"ecommerce"` case studies use the Optional Sections pattern (see the Architecture note above): **delete the whole field for a section in the data file, and it disappears from the page automatically** — no template changes needed.
-- Data-driven (`case-studies.ts`): the optional fields are `problem`, `research`, `solution`, `screenshots`, `impact`. (`overview` always shows — it's not optional.)
-- Ecommerce (`case-studies-ecommerce.ts`): the optional fields are `challenge`, `approach`, `solution`, `collaboration`, `reflection`. (The hero section always shows.)
+Both `"data-driven"` and `"ecommerce"` case studies use the Optional Sections pattern (see the Architecture note above): **delete the whole field for a section in that project's own file, and it disappears from the page automatically** — no template changes needed.
+- Data-driven (`data/case-studies/<project>.ts`): the optional fields are `problem`, `research`, `solution`, `screenshots`, `impact`. (`overview` always shows — it's not optional.)
+- Ecommerce (`data/case-studies-ecommerce/<project>.ts`): the optional fields are `challenge`, `approach`, `solution`, `collaboration`, `reflection`. (The hero section always shows.)
 
 Two things this pattern can't do: it can't **reorder** sections (the order is fixed by the template file, not the data), and it can't add a **new kind** of section that doesn't already exist in the template — both of those need Claude Code (see below).
 
@@ -74,19 +79,21 @@ Two things this pattern can't do: it can't **reorder** sections (the order is fi
 This is the easy, reusable path — use it unless the project truly needs a one-of-a-kind layout.
 
 1. **(You can do this yourself)** Add a new entry to the `projects` array in `projects.ts`: `id` (must be a unique URL-safe slug — this becomes `/case-study/<id>`), `title`, `description`, `category` (must match one of the `filters` in `work.tsx`: `App`, `Web`, or `Design System`, or `All`), `tags`, `image`, `published: true`, `featured: true/false`, `layoutType: "data-driven"`.
-2. **(You can do this yourself, carefully)** Add a matching object to the `caseStudies` record in `data/case-studies.ts`, keyed by the *same* `id` you used in step 1. It needs: `title`, `subtitle`, `category`, `tags`, `year`, `client`, `role`, `duration`, `hero`, `screenshots` (optional — array of image URLs or `{src, caption}` objects), `overview`, `problem: {title, description, challenges[]}`, `research: {title, description, insights[]}`, `solution: {title, description, features: [{title, description}]}`, `impact: {title, metrics: [{value, label}]}`, and `nextProject` (the `id` of another entry — powers the "Next Project" link at the bottom of the page). Omit any of `problem`/`research`/`solution`/`screenshots`/`impact` to hide that section.
-3. **(Ask Claude Code)** If any images are local uploads rather than external URLs: add the files to `src/assets/`, then `import` them at the top of `case-studies.ts` using the `figma:asset/<filename>` scheme and reference the imported variable instead of a raw string.
-4. No `routes.tsx` change needed — `case-study/:id` picks up any `"data-driven"` project automatically.
-5. Optional: update the `nextProject` chain so the new project is included in the rotation (point an existing entry's `nextProject` at the new `id`, and set the new entry's `nextProject` to continue the chain).
+2. **(You can do this yourself)** Copy `data/case-studies/_template.ts` to a new file in the same folder (e.g. `my-project.ts`), rename its exported const, and fill it in per the comments — it's already typed as `DataDrivenCaseStudy`, so a typo'd or missing required field shows as an editor error immediately, before you even save. It needs: `title`, `subtitle`, `category`, `tags`, `year`, `client`, `role`, `duration`, `hero`, `overview`, and optionally `screenshots`, `problem`, `research`, `solution`, `impact`, `nextProject`. Omit any of the optional ones to hide that section.
+3. **(You can do this yourself)** Open `data/case-studies/index.ts`, add an `import { myProject } from "./my-project";` line, and add `"<id>": myProject,` to the `caseStudies` map — the *same* `id` used in step 1. The file's header comment walks through this.
+4. **(Ask Claude Code)** If any images are local uploads rather than external URLs: add the files to `src/assets/`, then `import` them at the top of your project's file using the `figma:asset/<filename>` scheme and reference the imported variable instead of a raw string (see `smart-living.ts` for the pattern).
+5. No `routes.tsx` change needed — `case-study/:id` picks up any `"data-driven"` project automatically.
+6. Optional: update the `nextProject` chain so the new project is included in the rotation (point an existing project file's `nextProject` at the new `id`, and set the new file's `nextProject` to continue the chain).
 
 ### Adding a new project with layoutType: "ecommerce"
 
 `case-study-ecommerce.tsx` is a reusable template (not hardcoded to FreshCart) as of the Optional Sections conversion — adding a second `"ecommerce"`-layout project is data-only, same shape as the data-driven path above:
 
 1. **(You can do this yourself)** Add a new entry to `projects.ts` with `layoutType: "ecommerce"`.
-2. **(You can do this yourself, carefully)** Add a matching object to `ecommerceCaseStudies` in `data/case-studies-ecommerce.ts`, keyed by the same `id`. It needs: `hero: {label, headline, intro[], tags[], image}`, and any of `challenge`, `approach` (includes `decisionTable`), `solution` (includes `features[]`), `collaboration` (includes `beforeAfter`), `reflection` (includes `quote`) — omit any of these five to hide that section — plus `nextProjectId`.
-3. **(Ask Claude Code)** Same as above if using local images instead of URLs.
-4. No `routes.tsx` change needed — it already generates one route per project from `layoutType` (see Architecture above), so a second `"ecommerce"` project gets wired up automatically. `case-study-ecommerce.tsx` reads the id straight from the URL path (not `useParams()`, since these are literal per-project routes, not a shared `:id` route — see the comment at the top of that component) so no code change is needed there either.
+2. **(You can do this yourself)** Copy `data/case-studies-ecommerce/_template.ts` to a new file in the same folder, rename its exported const, and fill it in per the comments — typed as `EcommerceCaseStudy`. It needs `hero: {label, headline, intro[], tags[], image}`, and optionally `challenge`, `approach` (includes `decisionTable`), `solution` (includes `features[]`), `collaboration` (includes `beforeAfter`), `reflection` (includes `quote`), and `nextProjectId`. Omit any of the five optional sections to hide it.
+3. **(You can do this yourself)** Open `data/case-studies-ecommerce/index.ts`, import your new file, and add it to the `ecommerceCaseStudies` map keyed by the same `id`.
+4. **(Ask Claude Code)** Same as above if using local images instead of URLs.
+5. No `routes.tsx` change needed — it already generates one route per project from `layoutType` (see Architecture above), so a second `"ecommerce"` project gets wired up automatically. `case-study-ecommerce.tsx` reads the id straight from the URL path (not `useParams()`, since these are literal per-project routes, not a shared `:id` route — see the comment at the top of that component) so no code change is needed there either.
 
 ### Adding a new project with a bespoke layout (like "lego")
 

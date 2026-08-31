@@ -6,22 +6,28 @@
 
 ## 1. ไฟล์ที่ต้องเปิดกรอกเนื้อหา
 
+⚠️ **อัปเดต:** ตอนแรกเนื้อหาทุกโปรเจกต์อยู่รวมกันในไฟล์เดียว (`case-studies.ts` / `case-studies-ecommerce.ts`) — ตอนนี้แยกเป็น**1 ไฟล์ต่อ 1 โปรเจกต์**แล้ว หาและแก้ง่ายขึ้นมาก ไม่ต้องไล่หาใน้ไฟล์ยาวๆ อีกต่อไป
+
 เปิดด้วยโปรแกรมแก้ไขข้อความอะไรก็ได้ (VS Code, TextEdit ก็ได้) — ทั้ง 3 ไฟล์นี้:
 
 | ไฟล์ | ใช้ทำอะไร |
 |---|---|
-| `src/app/data/projects.ts` | ข้อมูลการ์ดของทั้ง `new-project-1` และ `new-project-2` (ชื่อ, คำโปรย, รูปปก, tags) |
-| `src/app/data/case-studies.ts` | เนื้อหาเต็มของหน้า case study ของ `new-project-1` (แถวท้ายไฟล์ ก่อน `};` ปิดท้าย) |
-| `src/app/data/case-studies-ecommerce.ts` | เนื้อหาเต็มของหน้า case study ของ `new-project-2` (แถวท้ายไฟล์ ก่อน `};` ปิดท้าย) |
+| `src/app/data/projects.ts` | ข้อมูลการ์ดของทั้ง `new-project-1` และ `new-project-2` (ชื่อ, คำโปรย, รูปปก, tags) — ยังเป็นไฟล์รวมเหมือนเดิม |
+| `src/app/data/case-studies/new-project-1.ts` | เนื้อหาเต็มของหน้า case study ของ `new-project-1` — ไฟล์ของตัวเองล้วนๆ |
+| `src/app/data/case-studies-ecommerce/new-project-2.ts` | เนื้อหาเต็มของหน้า case study ของ `new-project-2` — ไฟล์ของตัวเองล้วนๆ |
 
 Path เต็ม (จากโฟลเดอร์โปรเจกต์):
 ```
 /Users/ArPraew/Desktop/Portfolio file from Figma make/UX_UI Designer Portfolio Website/src/app/data/projects.ts
-/Users/ArPraew/Desktop/Portfolio file from Figma make/UX_UI Designer Portfolio Website/src/app/data/case-studies.ts
-/Users/ArPraew/Desktop/Portfolio file from Figma make/UX_UI Designer Portfolio Website/src/app/data/case-studies-ecommerce.ts
+/Users/ArPraew/Desktop/Portfolio file from Figma make/UX_UI Designer Portfolio Website/src/app/data/case-studies/new-project-1.ts
+/Users/ArPraew/Desktop/Portfolio file from Figma make/UX_UI Designer Portfolio Website/src/app/data/case-studies-ecommerce/new-project-2.ts
 ```
 
 ทุก field ในไฟล์เหล่านี้มี **comment ภาษาไทยกำกับไว้แล้ว** ว่าแสดงผลตรงไหน ใส่ได้กี่รายการ — ไม่ต้องเดา ตามอ่าน comment ในไฟล์ได้เลย
+
+**โบนัส:** ไฟล์พวกนี้ตอนนี้มี "แบบฟอร์ม" กำกับอยู่เบื้องหลัง (TypeScript type) ถ้าเผลอพิมพ์ชื่อ field ผิด (เช่นพิมพ์ `titel` แทน `title`) หรือลืมกรอก field ที่บังคับ **VS Code จะขีดเส้นแดงใต้จุดนั้นทันที** พร้อมบอกว่าขาดอะไร/พิมพ์ผิดตรงไหน ไม่ต้องรอ build ถึงจะรู้ว่าพัง — ลองดูตอนพิมพ์ได้เลย
+
+**เพิ่มโปรเจกต์ใหม่ในอนาคต:** อยากได้ไฟล์แม่แบบเปล่าไปกรอก ให้ไปก็อปไฟล์ `_template.ts` ในโฟลเดอร์ `case-studies/` หรือ `case-studies-ecommerce/` (แล้วแต่ประเภท) มาตั้งชื่อใหม่ — มี comment สอนขั้นตอนต่อครบใน `index.ts` ของแต่ละโฟลเดอร์อยู่แล้ว
 
 ---
 
@@ -45,8 +51,8 @@ Path เต็ม (จากโฟลเดอร์โปรเจกต์):
 | รูป | field | สัดส่วนที่พอดีกับกรอบ | บังคับไหม |
 |---|---|---|---|
 | รูปปกการ์ด | `projects.ts` → `image` | 4:3 | บังคับ |
-| Hero เต็มจอ | `case-studies.ts` → `hero` | แนวนอนกว้าง (16:9 ขึ้นไป) — วางองค์ประกอบสำคัญไว้ค่อนไปทางด้านบนของรูป เพราะกรอบนี้กว้าง/เตี้ยมากบนจอคอม | บังคับ |
-| Screenshots | `case-studies.ts` → `screenshots[].src` | 16:10 | ไม่บังคับ (ลบ field ทิ้งได้) |
+| Hero เต็มจอ | `case-studies/new-project-1.ts` → `hero` | แนวนอนกว้าง (16:9 ขึ้นไป) — วางองค์ประกอบสำคัญไว้ค่อนไปทางด้านบนของรูป เพราะกรอบนี้กว้าง/เตี้ยมากบนจอคอม | บังคับ |
+| Screenshots | `case-studies/new-project-1.ts` → `screenshots[].src` | 16:10 | ไม่บังคับ (ลบ field ทิ้งได้) |
 
 ### สำหรับ `new-project-2` (ecommerce)
 
@@ -66,14 +72,14 @@ Path เต็ม (จากโฟลเดอร์โปรเจกต์):
 
 ## 4. Field ไหนบังคับ ไหนเว้นได้
 
-**บังคับเสมอ** (ลบไม่ได้ ไม่งั้นเว็บพัง):
+**บังคับเสมอ** (ลบไม่ได้ ไม่งั้นเว็บพัง — ลบแล้ว VS Code จะขีดแดงเตือนด้วย):
 - `projects.ts`: `id`, `title`, `category`, `image`, `published`, `featured`, `layoutType`
-- `case-studies.ts`: `title`, `subtitle`, `category`, `tags`, `year`, `client`, `role`, `duration`, `hero`, `overview`
-- `case-studies-ecommerce.ts`: `hero` ทั้งก้อน
+- `case-studies/new-project-1.ts`: `title`, `subtitle`, `category`, `tags`, `year`, `client`, `role`, `duration`, `hero`, `overview`
+- `case-studies-ecommerce/new-project-2.ts`: `hero` ทั้งก้อน
 
 **ลบทั้งก้อนได้ถ้าไม่ต้องการ (section จะหายจากหน้าเว็บเองอัตโนมัติ):**
-- `case-studies.ts`: `problem`, `research`, `solution`, `screenshots`, `impact`
-- `case-studies-ecommerce.ts`: `challenge`, `approach`, `solution`, `collaboration`, `reflection`
+- `case-studies/new-project-1.ts`: `problem`, `research`, `solution`, `screenshots`, `impact`
+- `case-studies-ecommerce/new-project-2.ts`: `challenge`, `approach`, `solution`, `collaboration`, `reflection`
 
 จำง่ายๆ: field ที่มี comment เขียนว่า **"OPTIONAL"** กำกับไว้ = ลบทั้งก้อนได้ ที่เหลือห้ามลบ
 
@@ -158,3 +164,26 @@ Path เต็ม (จากโฟลเดอร์โปรเจกต์):
 **สิ่งที่ตั้งใจไม่แตะเลยตามที่สั่งไว้:** เนื้อหา/รูปของ `smart-living`, `freshcart-ecommerce`, `lego-design-system`, ไฟล์ `theme.css`, `DESIGN_SYSTEM.md`, และหน้าตา/โครงสร้างของทั้ง 3 layout เดิม (มีข้อยกเว้นเล็กน้อยที่จำเป็นคือแก้ logic การหา "Next Project" ในไฟล์ template 2 ไฟล์ตามที่อธิบายไว้ข้างบน — เป็นการแก้ logic ไม่ใช่แก้หน้าตา/เนื้อหา)
 
 **เรื่องที่ขอเบี่ยงจากคำสั่งเดิม 1 จุด:** คำสั่งเดิมบอกให้เปลี่ยน `case-study-ecommerce.tsx` เป็น `useParams()` เหมือน `case-study.tsx` — แต่เช็คแล้วพบว่าโค้ดปัจจุบัน (แก้ไว้ตั้งแต่ session ก่อนหน้า) อ่าน id จาก URL path โดยตรงอยู่แล้ว ซึ่งเป็นวิธีที่ถูกต้องสำหรับ routing แบบนี้ (route ของ ecommerce/lego เป็น path ตายตัวต่อโปรเจกต์ ไม่ใช่ route แบบ `:id` ที่ใช้ร่วมกัน) — ถ้าเปลี่ยนเป็น `useParams()` จริงจะทำให้หน้าเว็บพังทันที เลยขอไม่ทำตามข้อนี้ และใช้การเพิ่ม `new-project-2` เป็นบทพิสูจน์แทนว่าโค้ดปัจจุบันรองรับหลายโปรเจกต์ได้จริงอยู่แล้ว
+
+---
+
+## 9. อัปเดตรอบถัดมา — แยกไฟล์ data เป็น 1 โปรเจกต์ต่อ 1 ไฟล์
+
+หลังจากรอบข้างบนเสร็จ มีการปรับโครงสร้างไฟล์เพิ่ม เพื่อให้แก้เนื้อหาเองได้ง่ายขึ้น (ไฟล์สั้นลง หาง่ายขึ้น) โดย**ไม่เปลี่ยนเนื้อหาอะไรเลยแม้แต่ตัวอักษรเดียว** (เช็คโดยเทียบ build เก่ากับใหม่แบบละเอียดแล้ว)
+
+**ไฟล์ที่เพิ่มใหม่:**
+
+| ไฟล์ | หน้าที่ |
+|---|---|
+| `src/vite-env.d.ts` | ทำให้ VS Code รู้จัก `figma:asset/...` import (ไม่งั้นจะขึ้น error ปลอมทับ warning จริง) |
+| `src/app/data/case-studies/types.ts` | "แบบฟอร์ม" ของข้อมูล case study แบบ data-driven — Claude Code เท่านั้นที่ควรแก้ |
+| `src/app/data/case-studies/_template.ts` | แม่แบบเปล่า ก็อปไปใช้ตอนเพิ่มโปรเจกต์ใหม่ (ห้ามลบ ห้ามลงทะเบียนใน index.ts) |
+| `src/app/data/case-studies/smart-living.ts`, `nova-banking.ts`, `lumina-design.ts`, `flow-fitness.ts`, `new-project-1.ts` | แยกออกมาจากไฟล์รวมเดิม คนละไฟล์ต่อโปรเจกต์ |
+| `src/app/data/case-studies/index.ts` | รวมไฟล์ข้างบนเข้าด้วยกัน มี comment สอนวิธีเพิ่มโปรเจกต์ใหม่ |
+| `src/app/data/case-studies-ecommerce/types.ts`, `_template.ts`, `freshcart-ecommerce.ts`, `new-project-2.ts`, `index.ts` | ชุดเดียวกัน แต่สำหรับ layout ecommerce |
+
+**ไฟล์ที่ลบ (กลายเป็นโฟลเดอร์แทน):**
+- `src/app/data/case-studies.ts` → `src/app/data/case-studies/`
+- `src/app/data/case-studies-ecommerce.ts` → `src/app/data/case-studies-ecommerce/`
+
+ไม่ต้องแก้อะไรเพิ่มจากรอบก่อน path ในหัวข้อ 1, 3, 4 ข้างบนถูกอัปเดตให้ตรงกับโครงสร้างใหม่แล้ว
