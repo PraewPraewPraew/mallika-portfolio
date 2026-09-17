@@ -2,11 +2,15 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project overview
+## Project Overview
+
+<!-- ใส่ข้อมูลระดับ "รู้ก่อนอื่น": โปรเจกต์นี้คืออะไร, stack หลัก, ปลายทาง deploy, คำสั่งพื้นฐาน. อะไรที่คนเพิ่งเข้ามาต้องรู้ก่อนแตะโค้ด -->
 
 A UX/UI designer portfolio site originally scaffolded by Figma Make, now hand-edited. React 18 + TypeScript, Vite build, React Router v7 (`createBrowserRouter`), Tailwind CSS v4. No backend, no tests, no linter — all content is local static data.
 
-## Commands
+**Deploy:** the repo pushes to GitHub (`PraewPraewPraew/mallika-portfolio`) and deploys to Vercel at `mallika-portfolio-roan.vercel.app`. Because it is a client-side SPA, `vercel.json` carries the SPA rewrite that keeps deep links (e.g. `/case-study/<id>`) from 404-ing on production.
+
+**Commands:**
 
 ```bash
 npm install     # install dependencies
@@ -16,7 +20,17 @@ npm run build   # production build (vite build)
 
 There is no test suite, no lint script, and no tsconfig.json in this repo — the build's type checking happens implicitly through the Vite/esbuild transform, not via `tsc` (esbuild strips types without checking them, so a type error will never fail `npm run build`). Editor-level type checking (VS Code's red squiggles) still works reasonably well without a tsconfig via VS Code's inferred-project mode — this is what the interfaces in `data/case-studies/types.ts` and `data/case-studies-ecommerce/types.ts` rely on to catch typo'd/missing fields as you type. `src/vite-env.d.ts` declares the `figma:asset/*` module scheme so those image imports don't show as false "Cannot find module" errors in the editor.
 
-## Architecture
+## Design System
+
+<!-- ใส่: design token (สี/ฟอนต์/สเกล), ข้อจำกัดการใช้สีหรือ contrast ที่เคยเจอ, และแผน token ที่ยังไม่ได้ทำ. รายละเอียดเต็มอยู่ใน DESIGN_SYSTEM.md — ตรงนี้เก็บเฉพาะสิ่งที่ต้องเตือนตอนแก้โค้ด -->
+
+**`DESIGN_SYSTEM.md` is the single source of truth for all design-system values and spec** — the color tokens (hex values + usage rules), typography/type scale, spacing scale, component variants, responsive breakpoints, and animation guidelines all live there. Do **not** re-list token values in this file; when a token or design rule changes, update `DESIGN_SYSTEM.md` and reference it from here. In particular, `DESIGN_SYSTEM.md` is where the "never use `accent` as a text color" contrast caveat and the planned-but-not-yet-added status tokens are documented.
+
+Code-side (the part that isn't in `DESIGN_SYSTEM.md`): tokens live in `src/styles/theme.css` as CSS custom properties, then re-exposed to Tailwind v4 via `@theme inline`. The import pipeline (`fonts.css` → `tailwind.css` → `theme.css`) is described under "Architecture & Data > Styling pipeline".
+
+## Architecture & Data
+
+<!-- ใส่: โครงสร้างโค้ด (entry, routing, data flow), รูปแบบ/แพตเทิร์นที่ใช้ซ้ำ, gotcha ระดับโค้ด, และคู่มือเพิ่ม case study. ข้อมูลเชิงเทคนิคว่าโค้ดต่อกันยังไง -->
 
 - **Entry:** `src/main.tsx` mounts `src/app/App.tsx`, which renders `RouterProvider` from `src/app/routes.tsx`.
 - **Routing:** all routes are declared in `src/app/routes.tsx` and nest under `Root` (`src/app/pages/root.tsx`), which wraps every page with `Navigation`, `Footer`, and `ScrollToTop`. Case study routes are generated from `data/projects.ts`: projects with a non-`"data-driven"` `layoutType` (currently `"ecommerce"` → `case-study-ecommerce.tsx`, `"lego"` → `case-study-lego-design-system.tsx`) get a dedicated route built from `layoutComponents[project.layoutType]`, registered *before* the generic `case-study/:id` catch-all that handles every `"data-driven"` project via `case-study.tsx`. See "Adding a new case study" below for the full walkthrough.
@@ -30,19 +44,14 @@ There is no test suite, no lint script, and no tsconfig.json in this repo — th
   - `src/app/components/*.tsx` — hand-built portfolio-specific components (Button, Navigation, Footer, ProjectCard, SectionHeader, Tag, background-patterns, loading-spinner, scroll-to-top). Re-exported via `src/app/components/index.ts`.
   - `src/app/components/ui/*.tsx` — shadcn/ui primitives (Radix-based). Treat these as vendored library code; prefer composing them rather than rewriting.
   - `src/app/components/figma/ImageWithFallback.tsx` — wraps `<img>` with an inline SVG error fallback; used for externally-hosted (Unsplash) images that may fail to load.
-- **Styling:** design tokens (colors, font families, type scale, spacing, radius) live in `src/styles/theme.css` as CSS custom properties, then re-exposed to Tailwind v4 via `@theme inline`. `src/styles/index.css` is the entry point that imports `fonts.css`, `tailwind.css`, and `theme.css` in that order, plus global scrollbar/selection/focus styles. See `DESIGN_SYSTEM.md` for the full color/type/spacing/component spec (background `#F7F5F1`, foreground `#0A0A0A`, accent `#C8FF00`, muted `#7A7570`; Playfair Display for headings, DM Sans for body, JetBrains Mono for labels/tags).
+- **Styling pipeline:** `src/styles/index.css` is the entry point that imports `fonts.css`, `tailwind.css`, and `theme.css` in that order, plus global scrollbar/selection/focus styles. Token values themselves are documented under "Design System" above.
 - **Path alias:** `@` resolves to `src/` (configured in `vite.config.ts`).
 - **Figma asset imports:** `vite.config.ts` defines a custom `figma-asset-resolver` plugin that resolves `figma:asset/<filename>` imports to files in `src/assets`. Some older/generated code may still use this import scheme — new code should just import from `src/assets` directly (or reference `/src/assets/...` paths as `projects.ts` does).
 - **Vite config note:** the React and Tailwind Vite plugins must both stay enabled even if a change appears not to use Tailwind directly — required by the Figma Make tooling. Do not add `.css`, `.tsx`, or `.ts` to `assetsInclude` in `vite.config.ts`.
 - **`Button` (`src/app/components/button.tsx`) cannot render a real external link (`mailto:`, `https://...`).** Its `asChild + href` path always wraps `href` in React Router's `<Link>`, which mis-resolves external URLs as internal routes; using `asChild` alone (the pattern seen in `home.tsx`) nests a real `<a>` inside a `<button>`, creating two separate focusable elements for what looks like one control. `contact.tsx`'s Email/LinkedIn buttons work around this by hand-writing an `<a>` styled to match `Button`'s `ghost` variant instead of using the component. If `Button`'s visual styles change, update those `<a>` tags in `contact.tsx` by hand to match — see the "Known improvements" note below for the real fix.
 - **Never set `scroll-behavior: smooth` globally on `html`** (e.g. in `src/styles/index.css`). `root.tsx` renders React Router's `<ScrollRestoration />`, which resets/restores scroll via plain `window.scrollTo`; a global smooth-scroll rule makes the browser animate that call instead of jumping instantly, so navigating to a new route lands mid-scroll and back/forward restoration misses its target. If smooth scrolling is needed for a specific interaction, trigger it explicitly in JS (see `scroll-to-top.tsx`, which already passes `behavior: "smooth"` per-call) rather than applying it globally in CSS.
 
-## Conventions
-
-- Before recommending any third-party service, library, or tool (form backends, APIs, npm packages, etc.), verify current details from the official site/docs first — do not rely on memory. This applies especially to signup steps, free-tier limits, pricing, and current API syntax.
-- If the web can't be reached to verify, say so explicitly and tell the user the information may be outdated and should be double-checked before they act on it.
-
-## Adding a new case study
+### Adding a new case study
 
 Every project card (Work grid, Home featured section) and its case study page are driven by one entry in `src/app/data/projects.ts`. What else you need to touch depends on that entry's `layoutType`.
 
@@ -59,14 +68,14 @@ Every project card (Work grid, Home featured section) and its case study page ar
 
 Caveat on the data files: plain text/field edits (strings, numbers, array items) are safe to hand-edit — keep commas/quotes/brackets matching or the build breaks silently (typos in structure won't be caught by the type system the way a wrong field *name* is — see the note above). The `import ... from "figma:asset/..."` lines in `case-studies/smart-living.ts` always need Claude Code, since adding a local image means placing the file in `src/assets/` and getting the resolver-scheme import right.
 
-### Showing/hiding or re-featuring an existing project
+#### Showing/hiding or re-featuring an existing project
 
 **You can do this yourself in `projects.ts`, no code changes needed:**
 - `published: false` → hides the project from Work and Home. The case study page still exists and is reachable if someone has the direct URL — nothing 404s, it's just unlisted.
 - `featured: true/false` → controls whether it shows in Home's Featured Projects section (only takes effect if `published` is also `true`).
 - Editing `title`, `description`, `category`, `tags`, or `image` (as a URL string) on an existing entry is also safe to hand-edit.
 
-### Hiding/showing a section within an existing case study
+#### Hiding/showing a section within an existing case study
 
 Both `"data-driven"` and `"ecommerce"` case studies use the Optional Sections pattern (see the Architecture note above): **delete the whole field for a section in that project's own file, and it disappears from the page automatically** — no template changes needed.
 - Data-driven (`data/case-studies/<project>.ts`): the optional fields are `problem`, `research`, `solution`, `screenshots`, `impact`. (`overview` always shows — it's not optional.)
@@ -74,7 +83,7 @@ Both `"data-driven"` and `"ecommerce"` case studies use the Optional Sections pa
 
 Two things this pattern can't do: it can't **reorder** sections (the order is fixed by the template file, not the data), and it can't add a **new kind** of section that doesn't already exist in the template — both of those need Claude Code (see below).
 
-### Adding a new project with layoutType: "data-driven"
+#### Adding a new project with layoutType: "data-driven"
 
 This is the easy, reusable path — use it unless the project truly needs a one-of-a-kind layout.
 
@@ -85,7 +94,7 @@ This is the easy, reusable path — use it unless the project truly needs a one-
 5. No `routes.tsx` change needed — `case-study/:id` picks up any `"data-driven"` project automatically.
 6. Optional: update the `nextProject` chain so the new project is included in the rotation (point an existing project file's `nextProject` at the new `id`, and set the new file's `nextProject` to continue the chain).
 
-### Adding a new project with layoutType: "ecommerce"
+#### Adding a new project with layoutType: "ecommerce"
 
 `case-study-ecommerce.tsx` is a reusable template (not hardcoded to FreshCart) as of the Optional Sections conversion — adding a second `"ecommerce"`-layout project is data-only, same shape as the data-driven path above:
 
@@ -95,7 +104,7 @@ This is the easy, reusable path — use it unless the project truly needs a one-
 4. **(Ask Claude Code)** Same as above if using local images instead of URLs.
 5. No `routes.tsx` change needed — it already generates one route per project from `layoutType` (see Architecture above), so a second `"ecommerce"` project gets wired up automatically. `case-study-ecommerce.tsx` reads the id straight from the URL path (not `useParams()`, since these are literal per-project routes, not a shared `:id` route — see the comment at the top of that component) so no code change is needed there either.
 
-### Adding a new project with a bespoke layout (like "lego")
+#### Adding a new project with a bespoke layout (like "lego")
 
 `layoutType: "lego"` still maps to one hardcoded file (`case-study-lego-design-system.tsx`) that has not yet been converted to a data-driven template — it needs the same kind of conversion `case-study-ecommerce.tsx` just went through before a second `"lego"`-layout project can be added via data alone. Until then, a genuinely new bespoke layout always needs code work:
 
@@ -103,7 +112,38 @@ This is the easy, reusable path — use it unless the project truly needs a one-
 2. **(Ask Claude Code)** Register the new component in `layoutComponents` in `routes.tsx` under a new key (e.g. `"newproject"`).
 3. **(You can do this yourself once the above exists)** Add the project's entry to `projects.ts` with `layoutType` set to that new key.
 
+## Decisions Log
+
+<!-- ใส่: การตัดสินใจที่ทำไปแล้วพร้อม "เหตุผล" เพื่อไม่ให้ต้องเถียง/ลองใหม่ซ้ำในอนาคต. รูปแบบ: ตัดสินใจอะไร + ทำไม + ผลที่ตามมา -->
+
+- **Contact form removed — Web3Forms won't work on a free subdomain.** The contact page tried to wire its form to Web3Forms, but Web3Forms blocks free subdomains such as `.vercel.app` and won't approve them; the only fix would be buying a custom domain. Decision: drop the form entirely and use direct contact cards (Email + LinkedIn) instead. Don't re-attempt a form backend on the current `.vercel.app` domain.
+- **Contact cards are intentionally not clickable as a whole card.** On `contact.tsx` the Email/LinkedIn cards render a circular-outline icon plus a `ghost`-style button, and only the button is the tap target — the whole card is deliberately *not* a single link. This prevents accidental taps while scrolling on mobile.
+
+## Working Principles
+
+<!-- ใส่: วิธีทำงานร่วมกันระหว่างผู้ใช้กับ Claude Code (ไม่เกี่ยวกับโค้ดโดยตรง) — เช่น ขั้นตอนที่ต้องทำก่อน/หลัง, สิ่งที่ต้องยืนยันก่อนลงมือ, มาตรฐานการทดสอบ -->
+
+- **Verify external services before recommending them.** Before recommending any third-party service, library, or tool (form backends, APIs, npm packages, etc.), verify current details from the official site/docs first — do not rely on memory. This applies especially to signup steps, free-tier limits, pricing, and current API syntax. If the web can't be reached to verify, say so explicitly and tell the user the information may be outdated and should be double-checked before they act on it.
+- **For big or risky changes, report a plan as a list first and wait for confirmation before editing real files.** The user prefers to review the "what goes where / what gets dropped" plan before any file is touched.
+- **Always test on real production, not just localhost.** Some bugs only appear on the deployed Vercel site (past examples: the deep-link 404 that needed `vercel.json`, and the Web3Forms block that only showed on the `.vercel.app` domain). After a push, verify on the live URL, not only in `npm run dev`.
+
+## Content Status
+
+<!-- ใส่: สถานะเนื้อหาจริงของแต่ละโปรเจกต์ ณ ตอนนี้ — อันไหน publish แล้ว, อันไหนตั้ง published:false รอเนื้อหา, อันไหน rename/แปลง layout ค้างอยู่. อัปเดตทุกครั้งที่สถานะเปลี่ยน -->
+
+Current projects by layout (see `projects.ts` for the authoritative `published`/`featured` flags):
+
+- **data-driven** (`case-study.tsx`): `smart-living`, `nova-banking`, `lumina-design`, `flow-fitness`, `new-project-1`.
+- **ecommerce** (`case-study-ecommerce.tsx`): `freshcart-ecommerce`, `new-project-2`.
+- **lego** (`case-study-lego-design-system.tsx`): one bespoke project, content still hardcoded in the component (not yet a data-driven template).
+
+Notes:
+- `nova-banking`, `lumina-design`, and `flow-fitness` are intentionally `published: false` — they are placeholders kept for real content later, **not** to be deleted.
+- `new-project-1` and `new-project-2` are empty scaffolds (also `published: false`); the fill-in guide for these lives in `NEXT-STEPS.md`.
+
 ## Known improvements
+
+<!-- ใส่: งานปรับปรุงโค้ด/สถาปัตยกรรมที่ "รู้ว่าควรทำ" แต่ยังไม่ทำ พร้อมเงื่อนไขว่าเมื่อไรถึงคุ้มจะทำ. เรื่อง roadmap เนื้อหา/คอนเทนต์อยู่ที่ NEXT-STEPS.md ไม่ใช่ที่นี่ -->
 
 - `Button` should support external links natively: when `href` doesn't look like an internal route (i.e. not starting with `/`), render a plain `<a href>` instead of routing it through React Router's `<Link>`. This would remove the need for the hand-styled `<a>` workaround in `contact.tsx` (see the Architecture note above) and let any future external-link button reuse `Button` directly instead of duplicating its styles.
 - If it turns out the same kind of section (e.g. a quote block, a comparison table, a feature-card list) needs to be written more than once across different layout templates, that's the signal to stop copy-pasting per-template JSX and move to a **Section Registry**: data declares an ordered `sections: [{type, data}]` array, and a shared registry of block components (`Text`, `Table`, `Quote`, `FeatureList`, ...) renders whichever `type` each entry asks for. This is strictly more powerful than the current Optional Sections pattern — it also allows *reordering*, not just hiding — but it's a much bigger lift (new block-component library, rewritten data schema for every existing case study, higher regression risk on real content like `smart-living`). Don't build it speculatively; wait until at least 2-3 real cross-layout repeats actually show up, and convert one layout at a time starting with whichever has the least real content at stake.

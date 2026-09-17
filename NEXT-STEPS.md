@@ -18,9 +18,9 @@
 
 Path เต็ม (จากโฟลเดอร์โปรเจกต์):
 ```
-/Users/ArPraew/Desktop/Portfolio file from Figma make/UX_UI Designer Portfolio Website/src/app/data/projects.ts
-/Users/ArPraew/Desktop/Portfolio file from Figma make/UX_UI Designer Portfolio Website/src/app/data/case-studies/new-project-1.ts
-/Users/ArPraew/Desktop/Portfolio file from Figma make/UX_UI Designer Portfolio Website/src/app/data/case-studies-ecommerce/new-project-2.ts
+/Users/ArPraew/Projects/Portfolio file from Figma make/UX_UI Designer Portfolio Website/src/app/data/projects.ts
+/Users/ArPraew/Projects/Portfolio file from Figma make/UX_UI Designer Portfolio Website/src/app/data/case-studies/new-project-1.ts
+/Users/ArPraew/Projects/Portfolio file from Figma make/UX_UI Designer Portfolio Website/src/app/data/case-studies-ecommerce/new-project-2.ts
 ```
 
 ทุก field ในไฟล์เหล่านี้มี **comment ภาษาไทยกำกับไว้แล้ว** ว่าแสดงผลตรงไหน ใส่ได้กี่รายการ — ไม่ต้องเดา ตามอ่าน comment ในไฟล์ได้เลย
@@ -187,3 +187,25 @@ Path เต็ม (จากโฟลเดอร์โปรเจกต์):
 - `src/app/data/case-studies-ecommerce.ts` → `src/app/data/case-studies-ecommerce/`
 
 ไม่ต้องแก้อะไรเพิ่มจากรอบก่อน path ในหัวข้อ 1, 3, 4 ข้างบนถูกอัปเดตให้ตรงกับโครงสร้างใหม่แล้ว
+
+---
+
+## 10. Task ต่อไป (roadmap ระดับโปรเจกต์)
+
+รายการงานหลักที่วางไว้ ไล่จากใกล้ตัวสุดไปไกลสุด:
+
+1. เช็คงานล่าสุดว่าเสร็จและไม่มีอะไรพัง → commit + push
+2. เตรียมเนื้อหาโปรเจกต์จริง 3-5 อัน (เขียน offline ไว้ก่อน จะได้ไม่กิน token ตอนกรอก)
+3. กรอกเนื้อหาเองในไฟล์ data → เช็คบน `npm run dev` → เปลี่ยน `published: true` → push (ดูขั้นตอนละเอียดในหัวข้อ 5)
+4. เปลี่ยน `freshcart-ecommerce` เป็น "Doozy Online by SCGP" — **ถ้าเปลี่ยน `id` ต้องให้ Claude Code ทำ** (ต้องแก้ให้ตรงกันหลายไฟล์พร้อมกัน)
+5. เปลี่ยน `lego` เป็น "Building Design system like Lego" — ต้องแปลง `case-study-lego-design-system.tsx` เป็น data-driven template ก่อน ถ้าอยากแก้เนื้อหาเองได้ (ดูหัวข้อ "Adding a new project with a bespoke layout" ใน CLAUDE.md)
+
+---
+
+## 11. งานเก็บทีหลัง (ไม่กระทบ recruiter)
+
+งานปลีกย่อยที่ยังไม่เร่ง เก็บไว้ทำเมื่อว่าง:
+
+- 52 จุดที่ใช้ `text-[Npx]` (ขนาดฟอนต์ฝังค่าตรงๆ) ในไฟล์ `case-study-lego-design-system.tsx` — ควรเปลี่ยนไปใช้ token/สเกลของ design system
+- หน้า `design-system.tsx` ที่ยังไม่ได้ต่อ route ← **จุดขายวันสัมภาษณ์ อย่าลืม** (ตอนนี้ยังเข้าไม่ถึงจากเมนู)
+- รูป `Solutions-list-page.png` ที่ยังไม่ตัดสินใจว่าจะใช้ที่ไหน/ลบไหม

@@ -24,6 +24,17 @@ This portfolio website features a custom design system inspired by premium desig
 - Use `muted` for secondary text and labels
 - Use `surface-subtle` (`bg-surface-subtle`) for placeholder/empty-state boxes and subtle background fills — not for text
 
+> **⚠️ Never use `accent` (`#C8FF00`) as a text color.** It has a contrast ratio of only ~1.09 against the `#F7F5F1` background — far below any WCAG threshold — so it is legible only as a fill/background or a large decorative accent, never as foreground text. When you need a lime-adjacent color for text (or an accessible success/emphasis color), use the planned `accent-strong`/status tokens below, not `accent`.
+
+### Planned Colors (not yet implemented)
+
+These WCAG AA-passing tokens were designed but are **not yet in `src/styles/theme.css`** — only the original `accent` exists so far. Treat this as an open task, not something already available:
+
+- `success`: `#3F6B02`
+- `warning`: `#8A5A00`
+- `info`: `#0F5C8C`
+- `accent-strong`: `#3F6B02` — an accessible stand-in for when `accent` is needed as text/emphasis
+
 ## Typography
 
 ### Font Families
@@ -166,7 +177,7 @@ Using Motion (formerly Framer Motion) for:
 
 ## Accessibility
 
-- WCAG AA compliant color contrast
+- WCAG AA compliant color contrast for text (with the `accent`-as-text exception called out under Color System > Usage Guidelines)
 - All interactive elements have focus states
 - Semantic HTML structure
 - Alt text for all images
